@@ -19,4 +19,9 @@ public class Phim14 {
     public static final String WATCH_FILM_URl="#content .intro .phimbtn a";
     //episode link
     public static final String SERVER_LIST="#movie_info #server_list";
+    public static final String SERVER=".server_item";
+    public static final String SERVER_NAME="strong";
+    public static final String LIST_EPISODE="ul li";
+    public static final String ORIGNAl_LINK_EPISODE="a";
+    public static final String CODE_WATCH_LINK="#movie script";//index 2
 }

@@ -1,6 +1,8 @@
 package crawler_helper;
+import entity.Episode;
 import entity.Film;
 import entity.FilmDetail;
+import entity.ServerFilm;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -59,5 +61,45 @@ public class OFilmCrawler {
             e.printStackTrace();
         }
         return oFilmDetail;
+    }
+
+    public List<ServerFilm> getListServerFilm(String url){
+        List<ServerFilm> listServerFilm=new ArrayList<ServerFilm>();
+        try{
+            Document DocWatchFilm = Jsoup.connect(url).get();
+            Elements eServerFilm = DocWatchFilm.select(Phim14.SERVER_LIST);
+            Elements eServer = eServerFilm.select(Phim14.SERVER);
+            for (Element element: eServer) {
+                ServerFilm oServerFilm=new ServerFilm();
+                oServerFilm.Server=element.select(Phim14.SERVER_NAME).text();
+                Elements eListEpisode = element.select(Phim14.LIST_EPISODE);
+                List<Episode> oListEpisode=new ArrayList<Episode>();
+                for (Element element_episode:eListEpisode) {
+                    Episode oEpisode=new Episode();
+                    oEpisode.Episode=element_episode.text();
+                    oEpisode.EpisodeUrl=element_episode.select(Phim14.ORIGNAl_LINK_EPISODE).attr("href");
+                    oListEpisode.add(oEpisode);
+                }
+                oServerFilm.ListFilm=oListEpisode;
+                listServerFilm.add(oServerFilm);
+            }
+        }
+        catch (IOException e){
+        e.printStackTrace();
+    }
+        return listServerFilm;
+}
+
+    public String getWatchLinkCode(String url){
+        String sWatchLink="";
+        try{
+            Document docFilmCurrent = Jsoup.connect(url).get();
+            String sScript= docFilmCurrent.select(Phim14.CODE_WATCH_LINK).get(1).data().trim();
+            sWatchLink=sScript.substring(sScript.indexOf("{link:")+7,sScript.indexOf("\",preload:true"));
+        }
+        catch (IOException e){
+            e.printStackTrace();
+        }
+        return sWatchLink;
     }
 }
